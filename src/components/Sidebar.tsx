@@ -170,15 +170,45 @@ export default function Sidebar({
 
   const handleLocateMe = () => {
     setIsLocating(true);
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
-          setIsLocating(false);
-        },
-        () => { toast.error("Could not find your location."); setIsLocating(false); }
-      );
+    
+    if (!("geolocation" in navigator)) {
+      toast.error("Geolocation is not supported by your device.");
+      setIsLocating(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+        setIsLocating(false);
+        toast.success("Location found!");
+      },
+      (error) => {
+        console.warn("Geolocation Error:", error.message);
+        let errorMessage = "Could not find your location.";
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied. Please enable it in your browser settings.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information is unavailable. Check your signal.";
+            break;
+          case error.TIMEOUT:
+            // Often triggered if high accuracy fails
+            errorMessage = "The location request timed out. Please try again.";
+            break;
+        }
+        
+        toast.error(errorMessage);
+        setIsLocating(false);
+      },
+      {
+        enableHighAccuracy: false, // Changed to false: Uses fast WiFi/Network location instead of waiting for a GPS satellite lock
+        timeout: 10000,            // 10 seconds is plenty of time for network location
+        maximumAge: 300000         // Allows the browser to use a location cached within the last 5 minutes to speed things up
+      }
+    );
   };
 
   const getChipClass = (filterName: string) => {

@@ -1,4 +1,4 @@
-import { Bell, User, PlusSquare, LogOut } from 'lucide-react';
+import { User, PlusSquare, LogOut } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface HeaderProps {
