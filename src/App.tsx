@@ -12,6 +12,7 @@ import AuthModal from './components/AuthModal';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
@@ -136,6 +137,8 @@ export default function App() {
         } />
 
         <Route path="/test-error" element={<TestError />} />
+
+        <Route path="*" element={<NotFound />} />
 
       </Routes>
 
