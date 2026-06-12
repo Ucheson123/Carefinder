@@ -386,7 +386,7 @@ export default function Sidebar({
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input type="text" placeholder="Search hospitals..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full h-12 pl-10 pr-10 rounded-lg border border-[#E2E8F0] bg-white text-sm focus:outline-none focus:border-[#0D9488] focus:ring-1 focus:ring-[#0D9488] transition-shadow" />
               </div>
-              <button onClick={handleLocateMe} disabled={isLocating} className="flex items-center justify-center w-12 h-12 bg-white border border-[#E2E8F0] rounded-lg text-[#0D9488] hover:bg-gray-50 hover:border-[#0D9488] transition-all shrink-0 shadow-sm">
+              <button onClick={handleLocateMe} disabled={isLocating} className="flex items-center justify-center w-12 h-12 bg-white border border-[#E2E8F0] rounded-lg text-[#0D9488] hover:bg-gray-50 hover:border-[#0D9488] transition-all shrink-0 shadow-sm" title='Hospitals Within 10km Radius'>
                 <Navigation className={`w-5 h-5 ${isLocating ? 'animate-pulse text-gray-400' : ''}`} />
               </button>
             </div>

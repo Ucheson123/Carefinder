@@ -3,7 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import { supabase } from './lib/supabase'; 
 import type { Hospital } from './types';
 import { Loader2 } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast'; // <-- UPDATED: Imported toast function
+import toast, { Toaster } from 'react-hot-toast';
+import TestError from './pages/TestError';
 
 // Components & Pages
 import Header from './components/Header';
@@ -133,6 +134,9 @@ export default function App() {
             <AdminDashboard />
           </ProtectedRoute>
         } />
+
+        <Route path="/test-error" element={<TestError />} />
+
       </Routes>
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
