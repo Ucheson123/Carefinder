@@ -30,6 +30,14 @@ export default function App() {
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
+    // Check for Email Verification Redirect
+    if (window.location.href.includes('type=signup')) {
+      setTimeout(() => {
+        toast.success("Email verified successfully!");
+        window.history.replaceState(null, '', window.location.pathname);
+      }, 1000);
+    }
+
     // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);

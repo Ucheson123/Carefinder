@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, PlusSquare, LogOut, LayoutDashboard } from 'lucide-react';
+import { User, PlusSquare, LogOut, LayoutDashboard, BadgeCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
@@ -11,7 +11,6 @@ interface HeaderProps {
 export default function Header({ session, onOpenAuth }: HeaderProps) {
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Check if the current user is an admin
   useEffect(() => {
     async function checkAdminStatus() {
       if (!session) {
@@ -20,11 +19,9 @@ export default function Header({ session, onOpenAuth }: HeaderProps) {
       }
       
       try {
-        // We use the rpc call to hit the secure function you created in Supabase
         const { data, error } = await supabase.rpc('is_admin');
         if (error) throw error;
-        
-        setIsAdmin(data); // Will set true or false based on the database
+        setIsAdmin(data); 
       } catch (error) {
         console.error("Error verifying admin status:", error);
         setIsAdmin(false);
@@ -37,6 +34,9 @@ export default function Header({ session, onOpenAuth }: HeaderProps) {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
+
+  // Check if the user has confirmed their email
+  const isVerified = session?.user?.email_confirmed_at !== null && session?.user?.email_confirmed_at !== undefined;
 
   return (
     <header className="h-16 flex items-center justify-between px-6 bg-white border-b border-[#d8dadc] z-20 shadow-sm shrink-0">
@@ -54,7 +54,6 @@ export default function Header({ session, onOpenAuth }: HeaderProps) {
       <div className="flex items-center gap-4">
         {session ? (
           <>
-            {/* CONDITIONAL ADMIN BUTTON */}
             {isAdmin && (
               <Link 
                 to="/admin" 
@@ -65,10 +64,20 @@ export default function Header({ session, onOpenAuth }: HeaderProps) {
               </Link>
             )}
 
-            <div className="flex items-center gap-2 pl-4 border-l border-gray-200">
-              <div className="w-8 h-8 bg-[#86f2e4] text-[#005049] rounded-full flex items-center justify-center font-bold text-sm">
-                {session.user.email?.charAt(0).toUpperCase()}
+            <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+              
+              {/* AVATAR WITH VERIFIED BADGE */}
+              <div className="relative" title={session.user.email}>
+                <div className="w-8 h-8 bg-[#86f2e4] text-[#005049] rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
+                  {session.user.email?.charAt(0).toUpperCase()}
+                </div>
+                {isVerified && (
+                  <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-px" title="Verified Account">
+                    <BadgeCheck className="w-4 h-4 text-green-500" />
+                  </div>
+                )}
               </div>
+
               <button onClick={handleSignOut} className="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Sign Out">
                 <LogOut className="w-4 h-4" />
               </button>
